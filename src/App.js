@@ -28,12 +28,13 @@ const defaultTasks = [
 
 const App = () => {
   const [showAddTask, setShowAddTask] = useState(false);
-  const defTasks = JSON.parse(localStorage.getItem("tasks")) || defaultTasks
+  const tempData = localStorage.getItem("tasks");
+  let defTasks = JSON.parse(tempData) || defaultTasks;
   const [tasks, setTasks] = useState(defTasks);
 
   useEffect(() => {
     const localData = localStorage.getItem("tasks");
-    console.log(localData);
+    // console.log(localData);
     if (!localData) {
       localStorage.setItem("tasks", JSON.stringify(defaultTasks));
     }
@@ -41,7 +42,11 @@ const App = () => {
 
   //Delete task
   const deleteTask = async (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+    const localData = JSON.parse(localStorage.getItem("tasks"));
+    const updatedTasks = localData.filter((task) => task.id !== id);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    // const index = localData.indexOf()
+    setTasks(updatedTasks);
   };
 
   //Toggle Reminder
@@ -75,7 +80,6 @@ const App = () => {
   const fetchTask = async (id) => {
     const tasks = JSON.parse(localStorage.getItem("tasks"));
     const res = tasks.find((taskId) => taskId === id);
-    // const res = await fetch(`http://localhost:5000/tasks/${id}`);
     const data = await res.json();
 
     return data;
