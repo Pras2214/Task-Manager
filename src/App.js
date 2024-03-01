@@ -6,6 +6,7 @@ import AddTask from "./components/AddTask";
 import Footer from "./components/Footer";
 import About from "./components/About";
 const dbPath = process.env.PATH;
+console.log(dbPath);
 
 const App = () => {
   const [showAddTask, setShowAddTask] = useState(false);
