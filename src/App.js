@@ -28,10 +28,15 @@ const defaultTasks = [
 
 const App = () => {
   const [showAddTask, setShowAddTask] = useState(false);
-  const [tasks, setTasks] = useState(defaultTasks);
-  
+  const defTasks = JSON.parse(localStorage.getItem("tasks")) || defaultTasks
+  const [tasks, setTasks] = useState(defTasks);
+
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(defaultTasks));
+    const localData = localStorage.getItem("tasks");
+    console.log(localData);
+    if (!localData) {
+      localStorage.setItem("tasks", JSON.stringify(defaultTasks));
+    }
   }, []);
 
   //Delete task
@@ -48,15 +53,6 @@ const App = () => {
       "tasks",
       JSON.stringify(tasks.push(updatedTask))
     );
-
-    // const res = await fetch(`http://localhost:5000/tasks/${id}`, {
-    //   method: "PUT",
-    //   headers: {
-    //     "Content-type": "application/json",
-    //   },
-    //   body: JSON.stringify(updatedTask),
-    // });
-
     const data = await res.json();
 
     setTasks(
@@ -69,10 +65,9 @@ const App = () => {
   //Add Task
   const addTask = async (task) => {
     task.id = 5;
-    console.log(task);
     const data = localStorage.getItem("tasks");
-    const parsedData = JSON.parse(data)
-    localStorage.setItem("tasks", JSON.stringify([...parsedData, task]))
+    const parsedData = JSON.parse(data);
+    localStorage.setItem("tasks", JSON.stringify([...parsedData, task]));
     setTasks([...parsedData, task]);
   };
 
