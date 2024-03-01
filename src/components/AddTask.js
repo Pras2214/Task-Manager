@@ -4,18 +4,23 @@ const AddTask = ({ onAdd }) => {
   const [text, setText] = useState("");
   const [day, setDay] = useState("");
   const [reminder, setReminder] = useState(false);
+  let index = localStorage.getItem("index") || 3;
+  // localStorage.setItem("index", JSON.stringify(index));
+
 
   const onSubmit = (e) => {
+    index++;
     e.preventDefault();
     if (!text) {
       alert("Please add a task");
       return;
     }
 
-    onAdd({text,day,reminder})
+    onAdd({id:index,text,day,reminder})
     setText('')
     setDay('')
     setReminder(false)
+    localStorage.setItem("index",index);
   };
 
   return (
