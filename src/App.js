@@ -5,32 +5,37 @@ import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask";
 import Footer from "./components/Footer";
 import About from "./components/About";
-const dbPath = process.env.PATH;
-console.log(dbPath);
+const defaultTasks = [
+  {
+    id: "1",
+    text: "Doctors Appointment",
+    day: "Feb 5th at 2:30",
+    reminder: true,
+  },
+  {
+    id: "2",
+    text: "Meeting at School",
+    day: "Feb 6th at 1:30",
+    reminder: true,
+  },
+  {
+    id: "1d1e",
+    text: "Take Medicine",
+    day: "Feb 20th 4:46",
+    reminder: true,
+  },
+];
 
 const App = () => {
   const [showAddTask, setShowAddTask] = useState(false);
-  const [tasks, setTasks] = useState([]);
-
+  const [tasks, setTasks] = useState(defaultTasks);
+  
   useEffect(() => {
-    const getTasks = async () => {
-      const tasksFromServer = await fetchTasks();
-      setTasks(tasksFromServer);
-    };
-    getTasks();
+    localStorage.setItem("tasks", JSON.stringify(defaultTasks));
   }, []);
-
-  //Fetch Tasks
-  const fetchTasks = async () => {
-    const res = await fetch(`${dbPath}/tasks`, {mode:'cors'});
-    const data = await res.json();
-
-    return data;
-  };
 
   //Delete task
   const deleteTask = async (id) => {
-    await fetch(`${dbPath}/tasks/${id}`, { method: "DELETE" }, {mode:'cors'});
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
@@ -39,13 +44,18 @@ const App = () => {
     const taskToToggle = await fetchTask(id);
     const updatedTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
 
-    const res = await fetch(`${dbPath}/tasks/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(updatedTask),
-    }, {mode:'cors'});
+    const res = localStorage.setItem(
+      "tasks",
+      JSON.stringify(tasks.push(updatedTask))
+    );
+
+    // const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+    //   method: "PUT",
+    //   headers: {
+    //     "Content-type": "application/json",
+    //   },
+    //   body: JSON.stringify(updatedTask),
+    // });
 
     const data = await res.json();
 
@@ -58,25 +68,24 @@ const App = () => {
 
   //Add Task
   const addTask = async (task) => {
-    const res = await fetch(`${dbPath}/tasks`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(task),
-    }, {mode:'cors'});
-
-    const data = await res.json();
-    setTasks([...tasks, data]);
+    task.id = 5;
+    console.log(task);
+    const data = localStorage.getItem("tasks");
+    const parsedData = JSON.parse(data)
+    localStorage.setItem("tasks", JSON.stringify([...parsedData, task]))
+    setTasks([...parsedData, task]);
   };
 
   //Fetch Task
   const fetchTask = async (id) => {
-    const res = await fetch(`${dbPath}/tasks/${id}`, {mode:'cors'});
+    const tasks = JSON.parse(localStorage.getItem("tasks"));
+    const res = tasks.find((taskId) => taskId === id);
+    // const res = await fetch(`http://localhost:5000/tasks/${id}`);
     const data = await res.json();
 
     return data;
   };
+
   return (
     <Router>
       <div className="container">
