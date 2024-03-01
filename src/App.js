@@ -22,7 +22,7 @@ const App = () => {
 
   //Fetch Tasks
   const fetchTasks = async () => {
-    const res = await fetch(`${dbPath}/tasks`);
+    const res = await fetch(`${dbPath}/tasks`, {mode:'cors'});
     const data = await res.json();
 
     return data;
@@ -30,7 +30,7 @@ const App = () => {
 
   //Delete task
   const deleteTask = async (id) => {
-    await fetch(`${dbPath}/tasks/${id}`, { method: "DELETE" });
+    await fetch(`${dbPath}/tasks/${id}`, { method: "DELETE" }, {mode:'cors'});
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
@@ -45,7 +45,7 @@ const App = () => {
         "Content-type": "application/json",
       },
       body: JSON.stringify(updatedTask),
-    });
+    }, {mode:'cors'});
 
     const data = await res.json();
 
@@ -64,7 +64,7 @@ const App = () => {
         "Content-type": "application/json",
       },
       body: JSON.stringify(task),
-    });
+    }, {mode:'cors'});
 
     const data = await res.json();
     setTasks([...tasks, data]);
@@ -72,7 +72,7 @@ const App = () => {
 
   //Fetch Task
   const fetchTask = async (id) => {
-    const res = await fetch(`${dbPath}/tasks/${id}`);
+    const res = await fetch(`${dbPath}/tasks/${id}`, {mode:'cors'});
     const data = await res.json();
 
     return data;
