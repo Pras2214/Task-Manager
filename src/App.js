@@ -34,14 +34,13 @@ const App = () => {
 
   useEffect(() => {
     const localData = localStorage.getItem("tasks");
-    // console.log(localData);
     if (!localData) {
       localStorage.setItem("tasks", JSON.stringify(defaultTasks));
     }
   }, []);
 
   //Delete task
-  const deleteTask = async (id) => {
+  const deleteTask = (id) => {
     const localData = JSON.parse(localStorage.getItem("tasks"));
     const updatedTasks = localData.filter((task) => task.id !== id);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
@@ -50,39 +49,26 @@ const App = () => {
   };
 
   //Toggle Reminder
-  const toggleReminder = async (id) => {
-    const taskToToggle = await fetchTask(id);
-    const updatedTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
-
-    const res = localStorage.setItem(
-      "tasks",
-      JSON.stringify(tasks.push(updatedTask))
-    );
-    const data = await res.json();
-
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, reminder: data.reminder } : task
-      )
-    );
+  const toggleReminder = (id) => {
+    const data = localStorage.getItem("tasks");
+    const parsedData = JSON.parse(data);
+    const taskToToggle = parsedData.map((task) => {
+      if (task.id === id) {
+        return { ...task, reminder: !task.reminder };
+      } else {
+        return task;
+      }
+    });
+    localStorage.setItem("tasks", JSON.stringify(taskToToggle));
+    setTasks(taskToToggle);
   };
 
   //Add Task
   const addTask = async (task) => {
-    task.id = 5;
     const data = localStorage.getItem("tasks");
     const parsedData = JSON.parse(data);
     localStorage.setItem("tasks", JSON.stringify([...parsedData, task]));
     setTasks([...parsedData, task]);
-  };
-
-  //Fetch Task
-  const fetchTask = async (id) => {
-    const tasks = JSON.parse(localStorage.getItem("tasks"));
-    const res = tasks.find((taskId) => taskId === id);
-    const data = await res.json();
-
-    return data;
   };
 
   return (
