@@ -5,6 +5,7 @@ import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask";
 import Footer from "./components/Footer";
 import About from "./components/About";
+const path = process.env.PATH;
 
 const App = () => {
   const [showAddTask, setShowAddTask] = useState(false);
@@ -20,7 +21,7 @@ const App = () => {
 
   //Fetch Tasks
   const fetchTasks = async () => {
-    const res = await fetch("https://main--basictaskmanager.netlify.app/tasks");
+    const res = await fetch("path/tasks");
     const data = await res.json();
 
     return data;
@@ -28,7 +29,7 @@ const App = () => {
 
   //Delete task
   const deleteTask = async (id) => {
-    await fetch(`https://main--basictaskmanager.netlify.app/tasks/${id}`, { method: "DELETE" });
+    await fetch(`path/tasks/${id}`, { method: "DELETE" });
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
@@ -37,7 +38,7 @@ const App = () => {
     const taskToToggle = await fetchTask(id);
     const updatedTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
 
-    const res = await fetch(`https://main--basictaskmanager.netlify.app/tasks/${id}`, {
+    const res = await fetch(`path/tasks/${id}`, {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
@@ -56,7 +57,7 @@ const App = () => {
 
   //Add Task
   const addTask = async (task) => {
-    const res = await fetch("https://main--basictaskmanager.netlify.app/tasks", {
+    const res = await fetch("path/tasks", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -70,7 +71,7 @@ const App = () => {
 
   //Fetch Task
   const fetchTask = async (id) => {
-    const res = await fetch(`https://main--basictaskmanager.netlify.app/tasks/${id}`);
+    const res = await fetch(`path/tasks/${id}`);
     const data = await res.json();
 
     return data;
